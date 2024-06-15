@@ -3,13 +3,11 @@ package com.ssafy.enjoyTrip.travel.service;
 import java.util.Arrays;
 import java.util.List;
 
-import com.ssafy.enjoyTrip.community.dto.CommunityDto;
 import org.springframework.stereotype.Service;
 
 import com.ssafy.enjoyTrip.travel.dao.TravelDao;
 import com.ssafy.enjoyTrip.travel.dto.TravelDto;
 
-import lombok.AllArgsConstructor;
 import lombok.RequiredArgsConstructor;
 
 @Service

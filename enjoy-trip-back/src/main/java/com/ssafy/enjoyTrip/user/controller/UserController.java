@@ -81,19 +81,12 @@ public class UserController {
 			@RequestPart(value = "preProfileImageUrl", required = false) String preProfileImageUrl,
 			@RequestPart("profileImage") MultipartFile file) throws IOException {
 
-		log.info("preProfile: {}", preProfileImageUrl);
 		String ret = userService.updateUserProfileImage(userId, preProfileImageUrl, file);
-		Map<String, Object> result = new HashMap<>();
 
 		if(!"default".equals(ret)){
-			result.put("result", "success");
-			result.put("updateImageUrl", ret);
-
-			return new ResponseEntity<>(result, HttpStatus.OK);
-		} else {
-			result.put("result", "fail");
+			return new ResponseEntity<>(Map.of("result", "success", "updateImageUrl", ret), HttpStatus.OK);
 		}
-		return new ResponseEntity<>(result, HttpStatus.INTERNAL_SERVER_ERROR);
+		return new ResponseEntity<>(Map.of("result", "fail"), HttpStatus.INTERNAL_SERVER_ERROR);
 	}
 
 }

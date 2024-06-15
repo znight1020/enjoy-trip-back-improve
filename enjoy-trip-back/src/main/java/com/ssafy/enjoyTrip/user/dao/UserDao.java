@@ -3,7 +3,6 @@ package com.ssafy.enjoyTrip.user.dao;
 import org.apache.ibatis.annotations.Mapper;
 
 import com.ssafy.enjoyTrip.user.dto.UserDto;
-import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.util.Map;

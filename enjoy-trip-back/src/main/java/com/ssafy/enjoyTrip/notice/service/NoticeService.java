@@ -2,7 +2,6 @@ package com.ssafy.enjoyTrip.notice.service;
 
 import com.ssafy.enjoyTrip.notice.dto.NoticeDto;
 import com.ssafy.enjoyTrip.user.dto.UserDto;
-import jakarta.servlet.http.HttpSession;
 
 import java.util.List;
 

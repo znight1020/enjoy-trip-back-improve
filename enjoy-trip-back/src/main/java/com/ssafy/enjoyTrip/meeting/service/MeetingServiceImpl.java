@@ -1,24 +1,19 @@
 package com.ssafy.enjoyTrip.meeting.service;
 
-import com.amazonaws.services.s3.AmazonS3Client;
-import com.amazonaws.services.s3.model.ObjectMetadata;
 import com.ssafy.enjoyTrip.meeting.dao.MeetingDao;
 import com.ssafy.enjoyTrip.meeting.dao.ParticipantDao;
 import com.ssafy.enjoyTrip.meeting.dto.MeetingDetailDto;
 import com.ssafy.enjoyTrip.meeting.dto.MeetingDto;
 
 import java.io.IOException;
-import java.time.LocalDateTime;
 import java.util.List;
-import java.util.UUID;
 
 import com.ssafy.enjoyTrip.meeting.dto.ParticipantDto;
-import com.ssafy.enjoyTrip.user.dao.UserDao;
 import com.ssafy.enjoyTrip.user.dto.UserDto;
 import com.ssafy.enjoyTrip.util.image.ImageService;
+
 import lombok.RequiredArgsConstructor;
-import org.apache.ibatis.annotations.Param;
-import org.springframework.beans.factory.annotation.Value;
+
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -80,7 +75,6 @@ public class MeetingServiceImpl implements MeetingService{
     public int meetingDelete(int meetingId) {
         int resultParticipants = participantDao.deleteAllParticipant(meetingId);
         int resulMeetingDelete =meetingDao.meetingDelete(meetingId);
-        System.out.println(resultParticipants+ " " + resulMeetingDelete);
         if(resulMeetingDelete!=-1 && resultParticipants!=-1){
             return 1;
         }

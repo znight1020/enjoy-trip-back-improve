@@ -1,26 +1,19 @@
 package com.ssafy.enjoyTrip.user.service;
 
 import java.io.IOException;
-import java.util.HashMap;
 import java.util.Map;
-import java.util.UUID;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import com.amazonaws.services.s3.AmazonS3;
-import com.amazonaws.services.s3.AmazonS3Client;
-import com.amazonaws.services.s3.model.ObjectMetadata;
 import com.ssafy.enjoyTrip.util.image.ImageService;
-import jakarta.annotation.PostConstruct;
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.stereotype.Service;
-
 import com.ssafy.enjoyTrip.user.dao.UserDao;
 import com.ssafy.enjoyTrip.user.dto.UserDto;
 
+import lombok.extern.slf4j.Slf4j;
 import lombok.RequiredArgsConstructor;
+
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.stereotype.Service;
 
 @Service
 @RequiredArgsConstructor

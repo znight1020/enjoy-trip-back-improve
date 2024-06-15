@@ -2,7 +2,6 @@ package com.ssafy.enjoyTrip.travel.dao;
 
 import java.util.List;
 
-import com.ssafy.enjoyTrip.community.dto.CommunityDto;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 

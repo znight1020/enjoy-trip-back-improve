@@ -1,26 +1,22 @@
 package com.ssafy.enjoyTrip.auth.controller;
 
-import java.util.HashMap;
 import java.util.Map;
 
 import com.ssafy.enjoyTrip.SessionConst;
 import com.ssafy.enjoyTrip.user.dto.UserDto;
-import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.tags.Tag;
-import jakarta.servlet.http.Cookie;
-import jakarta.servlet.http.HttpServletResponse;
+import com.ssafy.enjoyTrip.auth.service.LoginService;
+
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+
+import jakarta.servlet.http.HttpSession;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
-import com.ssafy.enjoyTrip.auth.dto.LoginDto;
-import com.ssafy.enjoyTrip.auth.dto.LoginResultDto;
-import com.ssafy.enjoyTrip.auth.service.LoginService;
-
-import jakarta.servlet.http.HttpSession;
-import lombok.RequiredArgsConstructor;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 
 @RestController
 @Slf4j
@@ -36,16 +32,12 @@ public class LoginController {
 	public ResponseEntity<Map<String, Object>> login(@Validated @RequestParam("email") String email,
 													 @Validated @RequestParam("password") String password,
 													 HttpSession session){
-
 		UserDto loginMember = service.login(email, password);
 
 		if (loginMember != null) {
 			session.setAttribute(SessionConst.LOGIN_MEMBER, loginMember);
-			// 반환 값: result
-			log.info("userDto={}", loginMember);
 			return new ResponseEntity<>(Map.of("result", "success", "user", loginMember), HttpStatus.OK);
 		}
-		log.info("userDto={}", loginMember);
 		return new ResponseEntity<>(Map.of("result", "fail"), HttpStatus.BAD_REQUEST);
 	}
 	

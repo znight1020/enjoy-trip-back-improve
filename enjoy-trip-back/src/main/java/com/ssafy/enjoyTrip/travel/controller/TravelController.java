@@ -1,6 +1,5 @@
 package com.ssafy.enjoyTrip.travel.controller;
 
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -35,14 +34,10 @@ public class TravelController {
 			@RequestParam("contentType") String contentType
 			){
 		List<TravelDto> list =travelService.selectTravelListWithContent(sidoCode, gugunCode, contentType);
-		Map<String, Object> map = new HashMap<>();
 		if(list.size()!=0) {
-			map.put("list",list);
-			map.put("result", "success");	
-			return new ResponseEntity<Map<String,Object>>(map,HttpStatus.OK);
+			return new ResponseEntity<>(Map.of("list", list, "result", "success"), HttpStatus.OK);
 		}else {
-			map.put("result","fail");
-			return new ResponseEntity<Map<String,Object>>(map,HttpStatus.INTERNAL_SERVER_ERROR);
+			return new ResponseEntity<>(Map.of("result", "fail"),HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 	}
 	
@@ -53,24 +48,19 @@ public class TravelController {
 			@RequestParam("gugunCode") int gugunCode
 			){
 		List<TravelDto> list =travelService.selectTravelList(sidoCode, gugunCode);
-		Map<String, Object> map = new HashMap<>();
-		if(list.size()!=0) {
-			map.put("list",list);
-			map.put("result", "success");	
-			return new ResponseEntity<Map<String,Object>>(map,HttpStatus.OK);
+
+		if(list.size() != 0) {
+			return new ResponseEntity<>(Map.of("list", list, "result", "success"), HttpStatus.OK);
 		}else {
-			map.put("result","fail");
-			return new ResponseEntity<Map<String,Object>>(map,HttpStatus.INTERNAL_SERVER_ERROR);
+			return new ResponseEntity<>(Map.of("result", "fail"),HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 	}
 	
 	@GetMapping("/keyword")
 	@Operation(summary = "관광지 지역명 검색 기능", description = "사용자가 입력한 관광지를 조회하는 기능입니다.")
-	public ResponseEntity<Map<String,Object>> travelListByKeyword(
-			@RequestParam("keyword") String keyword
-			){
+	public ResponseEntity<Map<String,Object>> travelListByKeyword(@RequestParam("keyword") String keyword){
 		List<TravelDto> list =travelService.selectTravelListWithKeyword(keyword);
-		if(list.size()!=0) {
+		if(list.size() != 0) {
 			return new ResponseEntity<>(Map.of("list", list, "result", "success"),HttpStatus.OK);
 		}
 		return new ResponseEntity<>(Map.of("result", "fail"),HttpStatus.INTERNAL_SERVER_ERROR);
@@ -80,7 +70,6 @@ public class TravelController {
 	@Operation(summary = "인기 관광지 목록을 조회합니다.")
 	public ResponseEntity<Map<String, Object>> travelListTop() {
 		List<TravelDto> travelList = travelService.travelListTop();
-		log.info("list: {}", travelList);
 		if (!travelList.isEmpty()) {
 			return new ResponseEntity<>(Map.of("result", "success", "travelList", travelList), HttpStatus.OK);
 		} else {

@@ -4,17 +4,14 @@ import java.io.IOException;
 import java.util.*;
 import java.util.stream.Collectors;
 
-import com.amazonaws.services.s3.AmazonS3Client;
-import com.amazonaws.services.s3.model.ObjectMetadata;
 import com.ssafy.enjoyTrip.community.dao.CommunityDao;
 import com.ssafy.enjoyTrip.community.dto.CommunityDto;
 import com.ssafy.enjoyTrip.util.image.ImageService;
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
-
-import lombok.RequiredArgsConstructor;
 import org.springframework.web.multipart.MultipartFile;
+
+import lombok.extern.slf4j.Slf4j;
+import lombok.RequiredArgsConstructor;
 
 @Slf4j
 @Service
@@ -39,7 +36,7 @@ public class CommunityServiceImpl implements CommunityService {
     }
 
     @Override
-    public CommunityDto communityDetail(int communityId, int userId) { // 현재 세션 사용자의 userId
+    public CommunityDto communityDetail(int communityId, int userId) {
         CommunityDto communityDto = communityDao.communityDetail(communityId);
         if (communityDto.getUserId() == userId) {
             communityDto.setSameUser(true);

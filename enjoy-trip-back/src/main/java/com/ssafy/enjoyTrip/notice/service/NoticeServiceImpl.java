@@ -3,7 +3,6 @@ package com.ssafy.enjoyTrip.notice.service;
 import com.ssafy.enjoyTrip.notice.dao.NoticeDao;
 import com.ssafy.enjoyTrip.notice.dto.NoticeDto;
 import com.ssafy.enjoyTrip.user.dto.UserDto;
-import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -27,7 +26,6 @@ public class NoticeServiceImpl implements  NoticeService{
     @Override
     public NoticeDto noticeDetail(int noticeId, UserDto userDto) {
         NoticeDto noticeDto = noticeDao.noticeDetail(noticeId);
-        System.out.println(noticeDto);
         if(noticeDto.getUserId() == userDto.getUserId()){
             noticeDto.setSameUser(true);
         } else{

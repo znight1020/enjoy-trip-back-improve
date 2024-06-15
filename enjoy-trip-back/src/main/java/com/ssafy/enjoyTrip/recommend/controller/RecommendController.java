@@ -29,48 +29,36 @@ public class RecommendController {
 	@GetMapping("/{userId}")
 	@Operation(summary = "사용자 기반 여행지 추천", description = "사용자 기반에 따른 여행지를 추천하는 기능입니다.")
 	public ResponseEntity<Map<String,Object>> recommendWithAddr(@PathVariable int userId){
-		Map<String,Object> map = new HashMap<>();
 		List<RecommendDto> recommendList= recommendService.recommendWithAddr(userId);
 		
 		if (recommendList != null) {
-			map.put("result", "success");
-			map.put("list", recommendList);
-			return new ResponseEntity<Map<String,Object>>(map,HttpStatus.OK);
+			return new ResponseEntity<>(Map.of("result", "success", "list", recommendList), HttpStatus.OK);
 		} else {
-			map.put("result", "fail");
-			return new ResponseEntity<Map<String,Object>>(map,HttpStatus.INTERNAL_SERVER_ERROR);
+			return new ResponseEntity<>(Map.of("result", "fail"),HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 	}
 	
 	@GetMapping("/region/{userId}")
 	@Operation(summary = "사용자 지역 기반 여행지 추천", description = "사용자가 입력한 지역 기반에 따른 여행지를 추천하는 기능입니다.")
 	public ResponseEntity<Map<String,Object>> recommendPopular(@PathVariable int userId){
-		Map<String,Object> map = new HashMap<>();
 		List<RecommendDto> recommendList = recommendService.recommendPopular(userId);
 		
 		if (recommendList != null) {
-			map.put("result", "success");
-			map.put("list", recommendList);
-			return new ResponseEntity<Map<String,Object>>(map,HttpStatus.OK);
+			return new ResponseEntity<>(Map.of("result", "success", "list", recommendList), HttpStatus.OK);
 		} else {
-			map.put("result", "fail");
-			return new ResponseEntity<Map<String,Object>>(map,HttpStatus.INTERNAL_SERVER_ERROR);
+			return new ResponseEntity<>(Map.of("result", "fail"),HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 	}
 	
 	@GetMapping("/type/{userId}")
 	@Operation(summary = "사용자 콘텐츠 기반 여행지 추천", description = "사용자가 선호하는 콘텐츠 기반에 따른 여행지를 추천하는 기능입니다.")
 	public ResponseEntity<Map<String,Object>> recommendType(@PathVariable int userId){
-		Map<String,Object> map = new HashMap<>();
 		List<RecommendDto> recommendDto = recommendService.recommendByType(userId);
 		
 		if (recommendDto != null) {
-			map.put("result", "success");
-			map.put("recommendDto", recommendDto);
-			return new ResponseEntity<Map<String,Object>>(map,HttpStatus.OK);
+			return new ResponseEntity<>(Map.of("result", "success", "recommendDto", recommendDto), HttpStatus.OK);
 		} else {
-			map.put("result", "fail");
-			return new ResponseEntity<Map<String,Object>>(map,HttpStatus.INTERNAL_SERVER_ERROR);
+			return new ResponseEntity<>(Map.of("result", "fail"),HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 	}
 }

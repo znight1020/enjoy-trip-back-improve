@@ -9,11 +9,6 @@ import java.util.List;
 
 @Mapper
 public interface NoticeDao {
-    //글 조회
-    //글 상세
-    //글 수정 -- 사용자 권한 체크해야 함
-    //글 삭제 -- 사용자 권한 체크해야 함
-
     public int noticeInsert(NoticeDto dto);
     public int noticeUpdate(NoticeDto dto);
     public NoticeDto noticeDetail(int noticeId);

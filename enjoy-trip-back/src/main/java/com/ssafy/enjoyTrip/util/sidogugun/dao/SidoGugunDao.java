@@ -9,7 +9,7 @@ import com.ssafy.enjoyTrip.util.sidogugun.dto.SidoCodeDto;
 
 @Mapper
 public interface SidoGugunDao {
-	public List<SidoCodeDto> sidoCodeList();
-	public List<GugunCodeDto> gugunCodeList(String sidoCode);
+	List<SidoCodeDto> sidoCodeList();
+	List<GugunCodeDto> gugunCodeList(String sidoCode);
 	
 }

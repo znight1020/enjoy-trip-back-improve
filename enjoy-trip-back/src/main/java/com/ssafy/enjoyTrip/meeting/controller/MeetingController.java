@@ -27,29 +27,16 @@ import org.springframework.web.multipart.MultipartFile;
 @RequestMapping("/meeting")
 @RequiredArgsConstructor
 public class MeetingController {
-    /*
-        public int meetingInsert(MeetingDto dto);
-    public MeetingDto meetingSelect(int meetingId);
-    public List<MeetingDto> meetingList(int limit, int offset, String searchWord);
-    public int meetingUpdate(MeetingDto dto);
-    public int meetingDelete(int meetingId);
-    public List<MeetingDto> myMeetingList(int userId);
-     */
     private final MeetingService meetingService;
 
     @GetMapping("/posts")
     public ResponseEntity<Map<String,Object>> meetingList(@RequestParam("limit") int limit,
                                                           @RequestParam("offset") int offset){
-        Map<String,Object> map = new HashMap<>();
         List<MeetingDto> list=meetingService.meetingList(limit,offset);
         if(!list.isEmpty()){
-            map.put("list",list);
-            map.put("result", "success");
-            System.out.println(list);
-            return new ResponseEntity<Map<String, Object>>(map, HttpStatus.OK);
+            return new ResponseEntity<>(Map.of("list", list, "result", "success"), HttpStatus.OK);
         }else{
-            map.put("result","fail");
-            return new ResponseEntity<Map<String, Object>>(map, HttpStatus.INTERNAL_SERVER_ERROR);
+            return new ResponseEntity<>(Map.of("result", "fail"), HttpStatus.INTERNAL_SERVER_ERROR);
 
         }
     }
@@ -62,81 +49,54 @@ public class MeetingController {
                                                                 @RequestParam(name= "meetingEndDate" ,defaultValue="3000-01-01") String meetingEndDate,
                                                                 @RequestParam(name = "maxPeople", defaultValue = "0") int maxPeople,
                                                                 @RequestParam("meetingPassword") String meetingPassword) {
-        Map<String, Object> map = new HashMap<>();
-        System.out.printf("%d %d %s %s %s %s %s %s",limit,offset,searchTitle,searchAddr,meetingStartDate,meetingEndDate,maxPeople, meetingPassword);
-        System.out.println(meetingEndDate+" meetingEndTime");
         List<MeetingDto> list = meetingService.meetingSearchList(limit, offset, searchTitle, searchAddr, meetingStartDate, meetingEndDate, maxPeople, meetingPassword);
         if (!list.isEmpty()) {
-            map.put("list", list);
-            map.put("result", "success");
-            System.out.println(list);
-            return new ResponseEntity<Map<String, Object>>(map, HttpStatus.OK);
+            return new ResponseEntity<>(Map.of("list", list, "result", "success"), HttpStatus.OK);
         } else {
-            map.put("result", "fail");
-            return new ResponseEntity<Map<String, Object>>(map, HttpStatus.INTERNAL_SERVER_ERROR);
-
+            return new ResponseEntity<>(Map.of("result", "fail"), HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
     @PostMapping("/posts")
     public ResponseEntity<Map<String,Object>> meetingInsert(@RequestBody MeetingDto dto){
-        log.info("dto={}", dto);
-        Map<String,Object> map = new HashMap<>();
         int result = meetingService.meetingInsert(dto);
-        System.out.println("result: "+result);
-        System.out.println("dto: "+ dto);
         if(result==1){
-            map.put("result","success");
-            return new ResponseEntity<Map<String, Object>>(map, HttpStatus.OK);
-        }else{
-            map.put("result","fail");
-            return new ResponseEntity<Map<String, Object>>(map, HttpStatus.INTERNAL_SERVER_ERROR);
+            return new ResponseEntity<>(Map.of("result", "success"), HttpStatus.OK);
+        } else{
+            return new ResponseEntity<>(Map.of("result", "fail"), HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
     @PutMapping("/posts")
     public ResponseEntity<Map<String,Object>> meetingUpdate(@RequestBody MeetingDto meetingDto){
-        Map<String, Object> map = new HashMap<>();
         int ret = meetingService.meetingUpdate(meetingDto);
         if (ret == 1) {
-            map.put("result", "success");
-            return new ResponseEntity<Map<String, Object>>(map, HttpStatus.OK);
+            return new ResponseEntity<>(Map.of("result", "success"), HttpStatus.OK);
         } else {
-            map.put("result", "fail");
-            return new ResponseEntity<Map<String, Object>>(map, HttpStatus.INTERNAL_SERVER_ERROR);
+            return new ResponseEntity<>(Map.of("result", "fail"), HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
     @DeleteMapping("/posts/{meetingId}")
     public ResponseEntity<Map<String,Object>> meetingDelete(@PathVariable("meetingId") int meetingId){
-
-        Map<String, Object> map = new HashMap<>();
         int ret = meetingService.meetingDelete(meetingId);
         if (ret == 1) {
-            map.put("result", "success");
-            return new ResponseEntity<Map<String, Object>>(map, HttpStatus.OK);
+            return new ResponseEntity<>(Map.of("result", "success"), HttpStatus.OK);
         } else {
-            map.put("result", "fail");
-            return new ResponseEntity<Map<String, Object>>(map, HttpStatus.INTERNAL_SERVER_ERROR);
+            return new ResponseEntity<>(Map.of("result", "fail"), HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
     @GetMapping("/posts/{meetingId}")
     public ResponseEntity<Map<String, Object>> meetingDetail(@PathVariable("meetingId") int meetingId,  HttpSession session){
-        Map<String, Object> map = new HashMap<>();
         if(session.getAttribute(SessionConst.LOGIN_MEMBER)==null) {
             UserDto dummy = new UserDto();
             dummy.setUserId(-1);
-            MeetingDetailDto meetingDetail = meetingService.meetingDetail(meetingId,dummy);
-            map.put("meetingDetail",meetingDetail);
-            map.put("result", "success");
-            return new ResponseEntity<Map<String, Object>>(map, HttpStatus.OK);
+            MeetingDetailDto meetingDetail = meetingService.meetingDetail(meetingId, dummy);
+            return new ResponseEntity<>(Map.of("meetingDetail", meetingDetail, "result", "success"), HttpStatus.OK);
         }
         UserDto userDto = (UserDto) session.getAttribute(SessionConst.LOGIN_MEMBER);
-        System.out.println(userDto.getUserId());
         MeetingDetailDto meetingDetail = meetingService.meetingDetail(meetingId, userDto);
-        map.put("meetingDetail",meetingDetail);
-        map.put("result", "success");
-        return new ResponseEntity<Map<String, Object>>(map, HttpStatus.OK);
+        return new ResponseEntity<>(Map.of("meetingDetail", meetingDetail, "result", "success"), HttpStatus.OK);
     }
 
     @PostMapping(value = "/writing-image-upload", consumes = { "multipart/form-data"})

@@ -1,13 +1,11 @@
 package com.ssafy.enjoyTrip.auth.service;
 
 import com.ssafy.enjoyTrip.user.dto.UserDto;
-import lombok.extern.slf4j.Slf4j;
+import com.ssafy.enjoyTrip.auth.dao.LoginDao;
+
 import org.springframework.stereotype.Service;
 
-import com.ssafy.enjoyTrip.auth.dao.LoginDao;
-import com.ssafy.enjoyTrip.auth.dto.LoginDto;
-import com.ssafy.enjoyTrip.auth.dto.LoginResultDto;
-
+import lombok.extern.slf4j.Slf4j;
 import lombok.RequiredArgsConstructor;
 
 @Service
@@ -23,10 +21,8 @@ public class LoginServiceImpl implements LoginService{
 
 		if( userDto != null && userDto.getPassword().equals(password)) {
             userDto.setPassword(null);
-			log.info("userDto={}", userDto);
             return userDto;
         }
-		log.info("userDto={}", userDto);
 		return null;
 	}
 }

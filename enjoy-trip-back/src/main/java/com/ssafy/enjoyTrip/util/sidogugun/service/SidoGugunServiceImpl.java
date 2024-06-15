@@ -17,14 +17,11 @@ public class SidoGugunServiceImpl implements SidoGugunService{
 	private final SidoGugunDao sidoGugunDao;
 	@Override
 	public List<SidoCodeDto> sidoCodeList() {
-		// TODO Auto-generated method stub
 		return sidoGugunDao.sidoCodeList();
 	}
 
 	@Override
 	public List<GugunCodeDto> gugunCodeList(String sidoCode) {
-		// TODO Auto-generated method stub
 		return sidoGugunDao.gugunCodeList(sidoCode);
 	}
-
 }

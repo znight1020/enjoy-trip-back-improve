@@ -166,7 +166,7 @@ public class CommunityController {
 
 	@GetMapping("/delete-image/{imageUrl}")
 	public ResponseEntity<Map<String,String>> deleteMeetingImage(@PathVariable("imageUrl") String imageUrl){
-		int result = communityService.deleteCommunityImage(imageUrl);
+		int result = communityService.deleteImage(imageUrl);
 
 		if(result == 1) {
 			return new ResponseEntity<>(Map.of("result", "success"), HttpStatus.OK);

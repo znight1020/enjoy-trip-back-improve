@@ -150,11 +150,11 @@ public class MeetingController {
 
     @PostMapping(value = "/writing-image-delete/{imageName}")
     public ResponseEntity<Map<String, String>> meetingWritingImageDelete(@PathVariable("imageName") String imageName) throws IOException {
-        String result = meetingService.meetingWritingImageDelete(imageName);
-        if("success".equals(result)) {
-            return new ResponseEntity<>(Map.of("result", result), HttpStatus.OK);
+        Integer result = meetingService.meetingWritingImageDelete(imageName);
+        if(result == 1) {
+            return new ResponseEntity<>(Map.of("result", "success"), HttpStatus.OK);
         }
-        return new ResponseEntity<>(Map.of("result", result), HttpStatus.INTERNAL_SERVER_ERROR);
+        return new ResponseEntity<>(Map.of("result", "fail"), HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
     @GetMapping("/write/{userId}")
@@ -167,8 +167,8 @@ public class MeetingController {
     }
 
     @GetMapping("/delete-image/{imageUrl}")
-    public ResponseEntity<Map<String,String>> deleteMeetingImage(@PathVariable("imageUrl") String imageUrl){
-        int result = meetingService.deleteMeetingImage(imageUrl);
+    public ResponseEntity<Map<String,String>> deleteMeetingImage(@PathVariable("imageUrl") String imageUrl) throws IOException {
+        int result = meetingService.meetingWritingImageDelete(imageUrl);
 
         if(result == 1) {
             return new ResponseEntity<>(Map.of("result", "success"), HttpStatus.OK);

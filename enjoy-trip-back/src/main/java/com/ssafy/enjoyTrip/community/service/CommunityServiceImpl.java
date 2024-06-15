@@ -8,6 +8,7 @@ import com.amazonaws.services.s3.AmazonS3Client;
 import com.amazonaws.services.s3.model.ObjectMetadata;
 import com.ssafy.enjoyTrip.community.dao.CommunityDao;
 import com.ssafy.enjoyTrip.community.dto.CommunityDto;
+import com.ssafy.enjoyTrip.util.image.ImageService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -19,13 +20,8 @@ import org.springframework.web.multipart.MultipartFile;
 @Service
 @RequiredArgsConstructor
 public class CommunityServiceImpl implements CommunityService {
-    private final AmazonS3Client amazonS3Client;
-
-    @Value("${cloud.aws.s3.community-bucket}")
-    private String bucket;
-
-    static CommunityDto sorted[];
     private final CommunityDao communityDao;
+    private final ImageService imageService;
 
     @Override
     public int communityInsert(CommunityDto dto) {
@@ -79,47 +75,19 @@ public class CommunityServiceImpl implements CommunityService {
     public List<CommunityDto> communityListTop(int limit) {
         ArrayList<CommunityDto> dto = (ArrayList<CommunityDto>) communityDao.communityListTop(limit);
         Collections.sort(dto, (o1, o2) -> o1.getReadCount() - o2.getReadCount());
-        System.out.println("service : " + dto);
         ArrayList<CommunityDto> sortDto = (ArrayList<CommunityDto>) sort(dto);
         
         return sortDto.stream().limit(limit).collect(Collectors.toList());
     }
 
     @Override
-    public String uploadImage(MultipartFile image) throws IOException {
-        String originalFilename = image.getOriginalFilename();
-        int dotIndex = originalFilename.lastIndexOf('.');
-
-        String filename = originalFilename.substring(0, dotIndex);
-        String extension = originalFilename.substring(dotIndex+1);
-        String uuid = UUID.randomUUID().toString();
-        String newFilename = filename + uuid + "." + extension;
-
-        ObjectMetadata metadata = new ObjectMetadata();
-        metadata.setContentLength(image.getSize());
-        metadata.setContentType(image.getContentType());
-
-        try {
-            amazonS3Client.putObject(bucket, newFilename, image.getInputStream(), metadata);
-        } catch (Exception e) {
-            throw new IOException("Failed to upload file to S3", e);
-        }
-        // Return both URL and filename with UUID
-        return amazonS3Client.getUrl(bucket, newFilename).toString();
+    public String uploadImage(MultipartFile multipartFile) throws IOException {
+        return imageService.imageUpload("community", multipartFile);
     }
 
     @Override
-    public int deleteImage(String imageName) {
-        try {
-            boolean isObjectExist = amazonS3Client.doesObjectExist(bucket, imageName);
-            if (isObjectExist) {
-                amazonS3Client.deleteObject(bucket, imageName);
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-            return -1;
-        }
-        return 1;
+    public int deleteImage(String fileName) {
+        return imageService.imageDelete("community", fileName);
     }
 
     @Override
@@ -131,25 +99,6 @@ public class CommunityServiceImpl implements CommunityService {
     @Override
     public List<CommunityDto> specificUserWriteCommunity(int userId) {
         return communityDao.specificUserWriteCommunity(userId);
-    }
-
-    @Override
-    public int deleteCommunityImage(String imageUrl) {
-        int result = -1;
-
-        if(("".equals(imageUrl) || "default".equals(imageUrl) || imageUrl == null)){
-            return -1;
-        }
-        try {
-            boolean isImageExist = amazonS3Client.doesObjectExist(bucket, imageUrl);
-            if(isImageExist) {
-                amazonS3Client.deleteObject(bucket, imageUrl);
-                return 1;
-            }
-        } catch (Exception e) {
-            return -1;
-        }
-        return result;
     }
 
     public List<CommunityDto> sort(List<CommunityDto> list) {

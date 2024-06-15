@@ -19,9 +19,8 @@ public interface MeetingService {
     public List<MeetingDto> myMeetingList(int userId);
 
     public String meetingWritingImageUpload(MultipartFile image) throws IOException;
-    public String meetingWritingImageDelete(String imageName) throws IOException;
+    public Integer meetingWritingImageDelete(String imageName) throws IOException;
     List<MeetingDto> specificUserMeetingList(int userId);
-    int deleteMeetingImage(String imageUrl);
     public List<MeetingDto>  meetingSearchList(int limit,
                                               int offset,
                                                String searchTitle,

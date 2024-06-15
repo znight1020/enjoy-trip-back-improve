@@ -21,5 +21,4 @@ public interface CommunityService {
 
 	int hit(int communityId);
 	List<CommunityDto> specificUserWriteCommunity(int userId);
-	int deleteCommunityImage(String imageUrl);
 }

@@ -26,15 +26,7 @@ public class NoticeServiceImpl implements  NoticeService{
     @Override
     public NoticeDto noticeDetail(int noticeId, UserDto userDto) {
         NoticeDto noticeDto = noticeDao.noticeDetail(noticeId);
-        if(noticeDto.getUserId() == userDto.getUserId()){
-            noticeDto.setSameUser(true);
-        } else{
-            noticeDto.setSameUser(false);
-            noticeDto.setAdmin(false);
-        }
-        if("1".equals(userDto.getCode())){
-            noticeDto.setAdmin(true);
-        }
+        checkUserAuthorityForUpdateAndDelete(userDto, noticeDto);
         return noticeDto;
     }
 
@@ -81,5 +73,17 @@ public class NoticeServiceImpl implements  NoticeService{
     public int hit(int noticeId) {
         int data = noticeDao.readHit(noticeId) + 1;
         return noticeDao.hit(data, noticeId);
+    }
+
+    private static void checkUserAuthorityForUpdateAndDelete(UserDto userDto, NoticeDto noticeDto) {
+        if(noticeDto.getUserId() == userDto.getUserId()){
+            noticeDto.setSameUser(true);
+        } else{
+            noticeDto.setSameUser(false);
+            noticeDto.setAdmin(false);
+        }
+        if("1".equals(userDto.getCode())){
+            noticeDto.setAdmin(true);
+        }
     }
 }

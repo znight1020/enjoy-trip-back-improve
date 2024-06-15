@@ -39,21 +39,7 @@ public class MeetingServiceImpl implements MeetingService{
         List<ParticipantDto> participantList= participantDao.joinedParticipants(meetingId);
 
         //모집글을 쓴 사람이 본인인지, 또는 현재 로그인한 사람이 관리자인지
-        if(meetingDto.getUserId() == dto.getUserId()){
-            meetingDto.setSameUser(true);
-        }else{
-            meetingDto.setSameUser(false);
-            meetingDto.setAdmin(false);
-        }
-        if("1".equals(dto.getCode())){
-            meetingDto.setAdmin(true);
-        }
-
-        detailDto.setMeetingDto(meetingDto);
-
-        if(!participantList.isEmpty()){
-            detailDto.setPartiList(participantList);
-        }
+        checkUserAuthorityForUpdateAndDelete(dto, meetingDto, detailDto, participantList);
 
         return detailDto;
     }
@@ -100,6 +86,7 @@ public class MeetingServiceImpl implements MeetingService{
     public List<MeetingDto> specificUserMeetingList(int userId) {
         return meetingDao.specificUserMeetingList(userId);
     }
+
     @Override
     public List<MeetingDto> meetingSearchList(int limit, int offset, String searchTitle,
                                               String searchAddr, String meetingStartDate,
@@ -107,5 +94,23 @@ public class MeetingServiceImpl implements MeetingService{
                                               String meetingPassword) {
         boolean meetingPw = "true".equals(meetingPassword);
         return meetingDao.meetingSearchList(limit,offset,searchTitle,searchAddr,meetingStartDate,meetingEndDate,maxPeople,meetingPw);
+    }
+
+    private static void checkUserAuthorityForUpdateAndDelete(UserDto dto, MeetingDto meetingDto, MeetingDetailDto detailDto, List<ParticipantDto> participantList) {
+        if(meetingDto.getUserId() == dto.getUserId()){
+            meetingDto.setSameUser(true);
+        }else{
+            meetingDto.setSameUser(false);
+            meetingDto.setAdmin(false);
+        }
+        if("1".equals(dto.getCode())){
+            meetingDto.setAdmin(true);
+        }
+
+        detailDto.setMeetingDto(meetingDto);
+
+        if(!participantList.isEmpty()){
+            detailDto.setPartiList(participantList);
+        }
     }
 }

@@ -30,50 +30,21 @@ public class NoticeController {
                                                           @RequestParam("offset") int offset,
                                                           @RequestParam("searchWord") String searchWord,
                                                           @RequestParam("searchOption") String searchOption){
-        List<NoticeDto> noticeList ;
-
-        if ("".equals(searchWord)) {
-            noticeList = noticeService.noticeList(limit, offset);
-        } else {
-            //글번호 noticeId
-            if("noticeId".equals(searchOption)){
-                noticeList = noticeService.noticeListByNoticeId(searchWord,limit,offset);
-            }
-            //작성자 userId..이지만 닉네임으로 검색
-            else if("userId".equals(searchOption)){
-                noticeList = noticeService.noticeListByUserName(searchWord,limit,offset);
-            }
-            //제목 title
-            else if("title".equals(searchOption)){
-                noticeList = noticeService.noticeListSearchWord(searchWord,limit,offset);
-            }
-            //아무 조건에도 속하지 않으면 그냥 전체에 대해서 검색
-            else {
-                noticeList = noticeService.noticeList(limit, offset);
-            }
-        }
-
+        List<NoticeDto> noticeList = getFilteredNoticeList(limit, offset, searchWord, searchOption);
         if(!noticeList.isEmpty()){
             return new ResponseEntity<>(Map.of("noticeList", noticeList, "result", "success"), HttpStatus.OK);
         } else {
             return new ResponseEntity<>(Map.of("result", "fail"), HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
-    
+
     @GetMapping("/noticeListTotalCnt")
     @Operation(summary = "공지사항 전체 개수를 조회합니다." , description = "검색어를 파라미터로 받아 해당 공지사항의 개수를 반환해주는 기능입니다.")
     public ResponseEntity<Map<String, Object>> noticeListTotalCnt(@RequestParam("searchWord") String searchWord, @RequestParam("searchOption")String searchOption) {
-        int totalCnt;
-        if ("".equals(searchWord)) {
-            totalCnt = noticeService.noticeListTotalCnt();
-        }else if("userId".equals(searchOption)){
-            totalCnt = noticeService.noticeListUserNameTotalCnt(searchWord);
-        }else {
-            totalCnt = noticeService.noticeListSearchWordTotalCnt(searchWord);
-        }
+        int totalCount = getNoticeTotalCount(searchWord, searchOption);
 
-        if (totalCnt >= 0) {
-            return new ResponseEntity<>(Map.of("totalCnt", totalCnt, "result", "success"), HttpStatus.OK);
+        if (totalCount >= 0) {
+            return new ResponseEntity<>(Map.of("totalCnt", totalCount, "result", "success"), HttpStatus.OK);
         } else {
             return new ResponseEntity<>(Map.of("result", "fail"), HttpStatus.INTERNAL_SERVER_ERROR);
         }
@@ -145,5 +116,41 @@ public class NoticeController {
         return new ResponseEntity<>(Map.of("result", "fail"), HttpStatus.INTERNAL_SERVER_ERROR);
 
     }
-}
 
+    private List<NoticeDto> getFilteredNoticeList(int limit, int offset, String searchWord, String searchOption) {
+        List<NoticeDto> noticeList;
+        if ("".equals(searchWord)) {
+            noticeList = noticeService.noticeList(limit, offset);
+        } else {
+            //글번호 noticeId
+            if("noticeId".equals(searchOption)){
+                noticeList = noticeService.noticeListByNoticeId(searchWord, limit, offset);
+            }
+            //작성자 userId..이지만 닉네임으로 검색
+            else if("userId".equals(searchOption)){
+                noticeList = noticeService.noticeListByUserName(searchWord, limit, offset);
+            }
+            //제목 title
+            else if("title".equals(searchOption)){
+                noticeList = noticeService.noticeListSearchWord(searchWord, limit, offset);
+            }
+            //아무 조건에도 속하지 않으면 그냥 전체에 대해서 검색
+            else {
+                noticeList = noticeService.noticeList(limit, offset);
+            }
+        }
+        return noticeList;
+    }
+
+    private int getNoticeTotalCount(String searchWord, String searchOption) {
+        int totalCnt;
+        if ("".equals(searchWord)) {
+            totalCnt = noticeService.noticeListTotalCnt();
+        } else if("userId".equals(searchOption)){
+            totalCnt = noticeService.noticeListUserNameTotalCnt(searchWord);
+        } else {
+            totalCnt = noticeService.noticeListSearchWordTotalCnt(searchWord);
+        }
+        return totalCnt;
+    }
+}

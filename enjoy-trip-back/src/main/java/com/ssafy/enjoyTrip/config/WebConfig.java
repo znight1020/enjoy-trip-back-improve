@@ -1,5 +1,6 @@
 package com.ssafy.enjoyTrip.config;
 
+import com.ssafy.enjoyTrip.common.filter.CorsFilter;
 import com.ssafy.enjoyTrip.common.filter.LoginCheckFilter;
 import com.ssafy.enjoyTrip.common.interceptor.LogInterceptor;
 import jakarta.servlet.Filter;
@@ -20,22 +21,24 @@ public class WebConfig implements WebMvcConfigurer {
                 .excludePathPatterns("/css/**", "/*.icon", "/error", "/swagger-ui/**");
     }
 
-//    @Bean
-//    public FilterRegistrationBean loginCheckFilter(){
-//        FilterRegistrationBean<Filter> filterRegistrationBean = new FilterRegistrationBean<>();
-//        filterRegistrationBean.setFilter(new LoginCheckFilter());
-//        filterRegistrationBean.setOrder(1);
-//        filterRegistrationBean.addUrlPatterns("/*");
-//
-//        return filterRegistrationBean;
-//    }
+    @Bean
+    public FilterRegistrationBean loginCheckFilter(){
+        FilterRegistrationBean<Filter> filterRegistrationBean = new FilterRegistrationBean<>();
+        filterRegistrationBean.setFilter(new LoginCheckFilter());
+        filterRegistrationBean.setOrder(1);
+        filterRegistrationBean.addUrlPatterns("/*");
 
-    @Override
-    public void addCorsMappings(CorsRegistry registry) {
-        registry.addMapping("/**")
-                .allowedOrigins("http://localhost:5173")
-                .allowedMethods("GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS")
-                .allowCredentials(true)
-                .maxAge(3000);
+        return filterRegistrationBean;
     }
+
+    @Bean
+    public FilterRegistrationBean corsFilter(){
+        FilterRegistrationBean<Filter> filterRegistrationBean = new FilterRegistrationBean<>();
+        filterRegistrationBean.setFilter(new CorsFilter());
+        filterRegistrationBean.setOrder(0);
+        filterRegistrationBean.addUrlPatterns("/*");
+
+        return filterRegistrationBean;
+    }
+
 }

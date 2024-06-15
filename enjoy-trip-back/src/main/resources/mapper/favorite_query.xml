@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ssafy.enjoyTrip.favorite.dao.FavoriteDao">
+
+    <select id="favoriteList" parameterType="int" resultType="com.ssafy.enjoyTrip.favorite.dto.FavoriteDto">
+        select *
+        from favorites
+        where user_id=#{userId}
+    </select>
+    
+    <insert id="favoriteAdd" parameterType="com.ssafy.enjoyTrip.favorite.dto.FavoriteDto" >
+        insert into favorites(user_id, attraction_id, attraction_name) values ( #{userId}, #{attractionId}, #{attractionName});
+    </insert>
+    
+    <delete id="favoriteDelete" parameterType="com.ssafy.enjoyTrip.favorite.dto.FavoriteDto">
+    	delete from favorites where favorites_id=#{favoriteId}
+    </delete>
+
+</mapper>

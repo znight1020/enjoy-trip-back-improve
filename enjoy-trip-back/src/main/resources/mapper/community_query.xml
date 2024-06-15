@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ssafy.enjoyTrip.community.dao.CommunityDao">
+
+    <insert id="communityInsert" parameterType="com.ssafy.enjoyTrip.community.dto.CommunityDto">
+			INSERT INTO community ( category, user_id, user_name, user_profile_image_url, title, content, reg_dt, read_count )
+			     VALUES ( #{category}, #{userId}, #{name}, #{userProfileImageUrl}, #{title}, #{content}, now(), 0 );
+    </insert>
+    
+    <update id="communityUpdate" parameterType="com.ssafy.enjoyTrip.community.dto.CommunityDto">
+   	 	UPDATE community
+   	 	   SET title = #{title}, content = #{content}
+   	 	 WHERE community_id = #{communityId}
+    </update>
+    
+    <delete id="communityDelete" parameterType="int">
+    	DELETE FROM community
+    	      WHERE community_id = #{communityId}
+    </delete>
+    
+    <select id = "communityDetail" parameterType="int"
+    resultType="com.ssafy.enjoyTrip.community.dto.CommunityDto">
+    	SELECT c.community_id, c.category, c.user_id, u.name, u.USER_PROFILE_IMAGE_URL, c.TITLE, c.CONTENT, c.REG_DT, c.READ_COUNT
+    	  FROM community c, user u
+	     WHERE c.community_id = #{communityId}
+	       AND c.user_id = u.user_id
+    </select>
+    
+    <select id="communityListTop" resultType="com.ssafy.enjoyTrip.community.dto.CommunityDto">
+	      SELECT c.community_id, c.category, c.user_id, u.name, u.USER_PROFILE_IMAGE_URL, c.TITLE, c.CONTENT, c.REG_DT, c.READ_COUNT
+		    FROM community c, user u
+		   WHERE c.user_id = u.user_id
+		ORDER BY c.READ_COUNT DESC
+		   LIMIT #{limit}
+    </select>
+    
+    <select id = "communityList" parameterType="map" resultType="com.ssafy.enjoyTrip.community.dto.CommunityDto">
+      SELECT c.community_id, c.category,  c.user_id, u.name, u.USER_PROFILE_IMAGE_URL, c.TITLE, c.CONTENT, c.REG_DT, c.READ_COUNT
+        FROM community c, user u
+       WHERE c.user_id = u.user_id
+    ORDER BY c.community_id DESC
+       LIMIT #{limit} OFFSET #{offset}
+    </select>
+    
+    <select id="communityListTotalCnt">
+    	SELECT COUNT(*) FROM community
+    </select>
+    
+    <select id="communityListSearchWordTotalCnt" parameterType="string">
+		SELECT COUNT(*)
+		  FROM community
+		 WHERE TITLE LIKE concat("%",#{searchWord},"%")
+    </select>
+    
+    <select id="communityListSearchWord" parameterType="map" resultType="com.ssafy.enjoyTrip.community.dto.CommunityDto">
+	      SELECT c.community_id, c.category, c.user_id, u.name, u.USER_PROFILE_IMAGE_URL, c.TITLE, c.CONTENT, c.REG_DT, c.READ_COUNT
+	        FROM community c, user u
+		   WHERE c.user_id = u.user_id
+		     AND c.TITLE like concat("%",#{searchWord},"%")
+		ORDER BY c.community_id DESC
+		   LIMIT #{limit} OFFSET #{offset}
+	</select>
+
+	<update id="hit" parameterType="int">
+		UPDATE community
+		   SET read_count = #{data}
+		 WHERE community_id = #{communityId}
+	</update>
+
+	<select id="readHit" parameterType="int">
+		select read_count
+		  from community
+		 where community_id = #{communityId}
+	</select>
+
+	<select id = "specificUserWriteCommunity" resultType="com.ssafy.enjoyTrip.community.dto.CommunityDto">
+		SELECT *
+		  FROM community
+		 WHERE user_id = #{userId}
+		ORDER BY reg_dt
+	</select>
+
+</mapper>

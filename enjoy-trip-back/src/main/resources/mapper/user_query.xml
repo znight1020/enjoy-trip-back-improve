@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ssafy.enjoyTrip.user.dao.UserDao">
+
+    <select id="userDetail" parameterType="int" resultType="com.ssafy.enjoyTrip.user.dto.UserDto">
+        select user_id, email, password, name, user_profile_image_url, sido, gugun
+          from user
+         where user_id=#{userId}
+    </select>
+    
+    <insert id="userRegister" parameterType="com.ssafy.enjoyTrip.user.dto.UserDto" >
+        insert into user (email, password, name, sido, gugun)
+             values (#{email}, #{password},#{name}, #{sido}, #{gugun});
+    </insert>
+    
+    <update id="userUpdate" parameterType="com.ssafy.enjoyTrip.user.dto.UserDto">
+    	update user
+    	   set name=#{name},
+    	       password=#{password},
+    	       user_profile_image_url=#{userProfileImageUrl},
+    	       sido=#{sido},
+    	       gugun=#{gugun}
+		 where user_id=#{userId}
+    </update>
+    
+    <delete id="userDelete" parameterType="com.ssafy.enjoyTrip.user.dto.UserDto">
+    	delete from user where user_id=#{userId}
+    </delete>
+
+    <select id="findPassword" parameterType="string">
+        select password
+          from user
+         where email=#{email}
+    </select>
+
+    <update id="updateUserProfileImage" parameterType="java.util.Map">
+        update user
+        set user_profile_image_url=#{userProfileImageUrl}
+        where user_id=#{userId}
+    </update>
+
+
+
+</mapper>

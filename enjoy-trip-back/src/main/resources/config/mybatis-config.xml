@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE configuration PUBLIC "-//mybatis.org//DTD Config 3.0//EN"    "http://mybatis.org/dtd/mybatis-3-config.dtd">
+<configuration>
+	<settings>
+		<setting name="callSettersOnNulls" value="true" />
+		<setting name="mapUnderscoreToCamelCase" value="true" /> <!-- user_id => userId 로 변환 -->
+	</settings>
+
+	<mappers>
+		<mapper resource="mapper/community_query.xml" />
+		<mapper resource="mapper/login_query.xml" />
+		<mapper resource="mapper/user_query.xml" />
+		<mapper resource="mapper/travel_query.xml" />
+		<mapper resource="mapper/sidogugun_query.xml" />
+		<mapper resource="mapper/meeting_query.xml" />
+		<mapper resource="mapper/favorite_query.xml"/>
+		<mapper resource="mapper/recommend_query.xml"/>
+		<mapper resource="mapper/notice_query.xml"/>
+		<mapper resource="mapper/meeting_participants_query.xml"/>
+	</mappers>
+</configuration>

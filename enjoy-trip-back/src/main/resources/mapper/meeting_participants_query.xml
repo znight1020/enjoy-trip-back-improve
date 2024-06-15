@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ssafy.enjoyTrip.meeting.dao.ParticipantDao">
+    <!-- 소모임 참여하기 -->
+    <insert id="participantInsert" parameterType="com.ssafy.enjoyTrip.meeting.dto.ParticipantDto">
+    insert into meeting_participants(user_id, meeting_id, authority)
+    select #{userId}, #{meetingId}, c.code from code c where c.code_name =#{authority};
+</insert>
+    <!-- 이미 참여한 참가자는 참여하기 버튼을 볼 수 없어야 하기 때문에 참여 유무를 먼저 가져온다.-->
+    <select id="isParticipant" parameterType="map">
+        select count(*) from meeting_participants where user_id=#{userId} and meeting_id =#{meetingId}
+    </select>
+
+    <!-- 글에 대한 접근 제어 조회하기 -->
+    <select id="getAuthority" parameterType="map">
+        select authority from meeting_participants where user_id=#{userId} and meeting_id =#{meetingId}
+    </select>
+
+    <!--내가 참여하는 소모임 보기 -->
+    <select id="getParticipatingMeetings" resultType="com.ssafy.enjoyTrip.meeting.dto.MeetingDto">
+        select m.* from meeting_participants p join meeting m where p.meeting_id = m.meeting_id and p.user_id= #{userId};
+    </select>
+
+    <!-- 해당 글에 참여자가 누구인지 -->
+    <select id="joinedParticipants" resultType="com.ssafy.enjoyTrip.meeting.dto.ParticipantDto">
+        SELECT u.user_id, u.email, u.name, u.user_profile_image_url, c.code_name as authority
+        FROM meeting_participants p
+                 JOIN user u ON u.user_id = p.user_id
+                 JOIN code c ON c.code = p.authority
+        WHERE p.meeting_id = #{meetingId};
+    </select>
+
+    <!-- 소모임  탈퇴하기 -->
+    <delete id="deleteParticipant" parameterType="map">
+        delete from meeting_participants where user_id=#{userId} and meeting_id=#{meetingId}
+    </delete>
+
+    <!-- 소모임 멤버 모두 삭제하기 -->
+    <delete id="deleteAllParticipant">
+        delete from meeting_participants where meeting_id = #{meetingId}
+    </delete>
+</mapper>
+
+

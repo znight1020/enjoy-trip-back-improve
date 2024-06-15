@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ssafy.enjoyTrip.travel.dao.TravelDao">
+		<select id="selectTravelList" resultType="com.ssafy.enjoyTrip.travel.dto.TravelDto" parameterType="map" >
+		select attraction_id, title, addr1, addr2, first_image, first_image2, latitude, longitude
+		  from attraction_info
+		 where sido_code= #{sidoCode}
+		   and gugun_code= #{gugunCode}
+		</select> 
+		
+		<select id="selectTravelListWithContent" 
+		resultType="com.ssafy.enjoyTrip.travel.dto.TravelDto"
+		parameterType="map">
+		select attraction_id , title, addr1, addr2, first_image, first_image2, latitude, longitude
+		  from attraction_info
+		 where sido_code=#{sidoCode}
+		   and gugun_code=#{gugunCode}
+		   and content_type_id
+		    in <foreach item="content" collection="contentType" open="(" separator="," close=")"> #{content} </foreach>
+		</select>
+		
+		<select id="selectTravelListWithKeyword"
+		resultType="com.ssafy.enjoyTrip.travel.dto.TravelDto"
+		parameterType="string">
+		select attraction_id , title, addr1, addr2, first_image, first_image2, latitude, longitude
+		  from attraction_info
+		 where addr1 like concat('%',#{keyword},'%')
+		    or title like concat('%',#{keyword},'%');
+		</select>
+
+		<select id="travelListTop" resultType="com.ssafy.enjoyTrip.travel.dto.TravelDto">
+			SELECT ai.attraction_id, ai.content_type_id, ai.title, ai.addr1, ai.zipcode, ai.first_image, ai.sido_code, ai.gugun_code, ai.latitude, ai.longitude
+			FROM attraction_info ai
+					 JOIN (
+				SELECT attraction_id
+				FROM favorites
+				GROUP BY attraction_id
+				ORDER BY COUNT(user_id) DESC
+					LIMIT 3
+			) AS top_attractions
+						  ON ai.attraction_id = top_attractions.attraction_id
+
+		</select>
+</mapper>
+
+<!-- /EnjoyTrip/src/main/java/com/ssafy/enjoyTrip/travel/dao/TravelDao -->

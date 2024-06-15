@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ssafy.enjoyTrip.meeting.dao.MeetingDao">
+<insert id="meetingInsert" parameterType="com.ssafy.enjoyTrip.meeting.dto.MeetingDto"> 
+	 insert into meeting (user_id, user_name, title, content, meeting_password, attraction_id, meeting_start_date, meeting_end_date, thumbnail_url, reg_date )
+	 values (#{userId}, #{userName}, #{title}, #{content}, #{meetingPassword}, #{attractionId}, #{meetingStartDate}, #{meetingEndDate}, #{thumbnailUrl}, #{regDate})
+</insert>
+
+<select id="meetingDetail" parameterType="int" resultType="com.ssafy.enjoyTrip.meeting.dto.MeetingDto">
+	select m.*, a.attraction_id , a.addr1, a.first_image, a.first_image2, a.latitude, a.longitude, m.max_people,
+	       u.name as userName, u.user_profile_image_url, m.reg_Date
+	from meeting m join attraction_info a
+				   join user u
+	where a.attraction_id = m.attraction_id
+	  and meeting_id =#{meetingId} and m.user_id = u.user_id;
+</select>
+
+<select id="meetingList" resultType="com.ssafy.enjoyTrip.meeting.dto.MeetingDto">
+	select m.*, a.attraction_id , a.addr1, a.first_image, a.first_image2,
+	       u.name as userName, u.user_profile_image_url , m.reg_date, m.thumbnail_url , m.max_people
+	FROM meeting m
+			 JOIN attraction_info a ON a.attraction_id = m.attraction_id
+			 JOIN user u ON m.user_id = u.user_id
+	ORDER BY m.reg_Date DESC
+		LIMIT #{limit} OFFSET #{offset}
+</select>
+
+	<select id="meetingSearchList"  resultType="com.ssafy.enjoyTrip.meeting.dto.MeetingDto">
+		SELECT m.*,
+		a.attraction_id, a.addr1, a.first_image, a.first_image2,
+		u.name as userName, u.user_profile_image_url,
+		m.reg_date, m.thumbnail_url, m.max_people
+		FROM meeting m
+		JOIN attraction_info a ON a.attraction_id = m.attraction_id
+		JOIN user u ON m.user_id = u.user_id
+		WHERE m.title LIKE CONCAT('%', #{searchTitle}, '%')
+		AND a.addr1 LIKE CONCAT('%', #{searchAddr}, '%')
+		AND   m.meeting_start_date>=#{meetingStartDate}
+		AND  #{meetingEndDate}>= meeting_end_date
+		<choose>
+		  	<when test = "maxPeople !=0">
+				AND m.max_people = #{maxPeople}
+			</when>
+			<when test="meetingPassword == true">
+				AND m.meeting_password IS NOT NULL
+			</when>
+			<otherwise>
+				AND m.meeting_password IS NULL
+			</otherwise>
+		</choose>
+		ORDER BY m.reg_date DESC
+		LIMIT #{limit} OFFSET #{offset}
+	</select>
+
+<update id="meetingUpdate" parameterType="com.ssafy.enjoyTrip.meeting.dto.MeetingDto">
+	update meeting set title=#{title}, content=#{content}, meeting_password=#{meetingPassword},
+	                   meeting_start_date=#{meetingStartDate}, meeting_end_date=#{meetingEndDate},
+	                   attraction_id=#{attractionId}, thumbnail_url = #{thumbnailUrl},
+	                   max_people = #{maxPeople}
+	where meeting_id = #{meetingId};
+
+</update>
+
+<delete id="meetingDelete" parameterType="int">
+	delete from meeting where meeting_id = #{meetingId}
+</delete>
+
+<select id="myMeetingList" parameterType="com.ssafy.enjoyTrip.meeting.dto.MeetingDto">
+	select a.attraction_id , a.addr1, a.first_image, a.first_image2, a.latitude, a.longitude, u.name, u.user_profile_image_url, m.reg_date, m.thumbnail_url, m.max_people
+	from meeting m join attraction_info a
+				   join user u where a.attraction_id = m.attraction_id
+								 and m.user_id = #{userId} and m.user_id = u.user_id;
+
+</select>
+
+	<select id="specificUserMeetingList" parameterType="int" resultType="com.ssafy.enjoyTrip.meeting.dto.MeetingDto">
+		select m.meeting_id, m.meeting_password, m.title,
+			   m.meeting_start_date, meeting_end_date, thumbnail_url, reg_date, max_people ,
+			   u.name as userName, u.user_profile_image_url, a.addr1,
+			   a.first_image
+		from meeting m join user u on u.user_id= m.user_id
+					   join attraction_info a on m.attraction_id = a.attraction_id
+		where m.user_id = #{userId};
+	</select>
+</mapper>

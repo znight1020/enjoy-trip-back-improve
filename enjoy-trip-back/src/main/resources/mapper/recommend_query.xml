@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ssafy.enjoyTrip.recommend.dao.RecommendDao">
+
+    <select id="recommendWithAddr" parameterType="int" resultType="com.ssafy.enjoyTrip.recommend.dto.RecommendDto">
+        SELECT *
+        FROM attraction_info
+        WHERE addr1 LIKE (SELECT CONCAT('%', sido, '%') FROM user WHERE user_id = #{userId})
+          AND addr1 LIKE (SELECT CONCAT('%', gugun, '%') FROM user WHERE user_id = #{userId}) order by rand() limit 10;
+    </select>
+
+    <select id = "recommendFavoriteAddr" parameterType="int" resultType="com.ssafy.enjoyTrip.recommend.dto.RecommendDto">
+        select  ai.*  from favorites f join attraction_info ai
+        on ai.attraction_id = f.attraction_id
+        where f.user_id = #{userId}
+        group by f.attraction_id
+        order by  count(*) desc;
+
+    </select>
+
+    <select id="recommendPopular" resultType="com.ssafy.enjoyTrip.recommend.dto.RecommendDto">
+        SELECT COUNT(*) as favoriteCount , ai.attraction_id, ai.content_type_id, ai.title,
+               ai.addr1, ai.first_image, ai.first_image2, sido_code, gugun_code, latitude, longitude
+        FROM favorites f join attraction_info ai on ai.attraction_id=f.attraction_id
+        GROUP BY f.attraction_id
+        ORDER BY favoriteCount DESC;
+    </select>
+
+    
+    <select id="recommendByType" parameterType="int" resultType="com.ssafy.enjoyTrip.recommend.dto.RecommendDto">
+        select  * from attraction_info where content_type_id in
+            (select distinct content_type_id
+             from attraction_info ai join favorites f on ai.attraction_id =f.attraction_id
+             where user_id= #{userId})
+        order by rand() limit 10;
+
+    </select>
+
+
+
+</mapper>

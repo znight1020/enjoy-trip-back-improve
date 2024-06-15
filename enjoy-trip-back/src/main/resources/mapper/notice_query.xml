@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ssafy.enjoyTrip.notice.dao.NoticeDao">
+
+    <insert id="noticeInsert" parameterType="com.ssafy.enjoyTrip.notice.dto.NoticeDto">
+        insert into notice ( user_id, title, content, reg_date, read_count )
+        values ( #{userId}, #{title}, #{content}, now(), 0 );
+    </insert>
+
+    <update id="noticeUpdate" parameterType="com.ssafy.enjoyTrip.notice.dto.NoticeDto">
+        update notice set title = #{title}, content = #{content} where notice_id = #{noticeId}
+    </update>
+
+    <delete id="noticeDelete" parameterType="int">
+        delete from notice where notice_id = #{noticeId}
+    </delete>
+
+    <select id = "noticeDetail" parameterType="int"
+            resultType="com.ssafy.enjoyTrip.notice.dto.NoticeDto">
+        SELECT n.notice_id,  n.user_id, u.name as userName, u.USER_PROFILE_IMAGE_URL, u.code as code,
+               n.TITLE, n.CONTENT, n.REG_date, n.READ_COUNT FROM notice n, user u
+        WHERE n.notice_id = #{noticeId}
+          AND n.user_id = u.user_id
+    </select>
+
+    <select id = "noticeList" parameterType="map" resultType="com.ssafy.enjoyTrip.notice.dto.NoticeDto">
+        SELECT n.notice_id, n.user_id, u.NAME as userName, u.USER_PROFILE_IMAGE_URL, n.TITLE, n.CONTENT, n.REG_date, n.READ_COUNT
+        FROM notice n , user u
+        WHERE n.user_id = u.user_id
+        ORDER BY n.notice_id DESC
+        LIMIT #{limit} OFFSET #{offset}
+    </select>
+
+    <select id="noticeListTotalCnt">
+        SELECT COUNT(*) FROM notice
+    </select>
+
+    <select id="noticeListSearchWordTotalCnt" parameterType="string">
+        SELECT COUNT(*) FROM notice WHERE TITLE LIKE concat("%",#{searchWord},"%")
+    </select>
+
+    <select id="noticeListUserNameTotalCnt" parameterType="string">
+        SELECT COUNT(*)
+        FROM  notice n join user u
+        where u.user_id = n.user_id
+        and u.name = #{userName}
+        ORDER BY n.notice_id DESC
+    </select>
+
+    <select id="noticeListSearchWord" parameterType="map" resultType="com.ssafy.enjoyTrip.notice.dto.NoticeDto">
+        SELECT n.notice_id, n.user_id, u.name as userName, u.USER_PROFILE_IMAGE_URL, n.TITLE, n.CONTENT, n.REG_Date, n.READ_COUNT
+        FROM notice n, user u
+        WHERE n.user_id = u.user_id
+          AND n.TITLE like concat("%",#{searchWord},"%")
+        ORDER BY n.notice_id DESC
+        LIMIT #{limit} OFFSET #{offset}
+    </select>
+
+    <select id="noticeListByNoticeId" parameterType="map" resultType="com.ssafy.enjoyTrip.notice.dto.NoticeDto">
+        SELECT n.notice_id, n.user_id, u.name as userName, u.USER_PROFILE_IMAGE_URL, n.TITLE, n.CONTENT, n.REG_Date, n.READ_COUNT
+        FROM notice n, user u
+        WHERE n.user_id = u.user_id
+          AND n.notice_id =#{noticeId}
+        ORDER BY n.notice_id DESC
+            LIMIT #{limit} OFFSET #{offset}
+    </select>
+
+    <select id="noticeListByUserName" parameterType="map" resultType="com.ssafy.enjoyTrip.notice.dto.NoticeDto">
+        SELECT n.notice_id, n.user_id, u.name as userName, u.USER_PROFILE_IMAGE_URL, n.TITLE, n.CONTENT, n.REG_Date, n.READ_COUNT
+        FROM notice n, user u
+        WHERE n.user_id = u.user_id
+          AND u.name = #{userName}
+        ORDER BY n.notice_id DESC
+            LIMIT #{limit} OFFSET #{offset}
+    </select>
+
+    <update id="hit" parameterType="int">
+        UPDATE notice
+        SET read_count = #{data}
+        WHERE notice_id = #{noticeId}
+    </update>
+
+    <select id="readHit" parameterType="int">
+        select read_count
+        from notice
+        where notice_id = #{noticeId}
+    </select>
+
+</mapper>

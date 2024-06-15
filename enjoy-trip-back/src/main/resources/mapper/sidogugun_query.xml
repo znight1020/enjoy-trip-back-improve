@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper
+	namespace="com.ssafy.enjoyTrip.util.sidogugun.dao.SidoGugunDao">
+	<select id="sidoCodeList"
+		resultType="com.ssafy.enjoyTrip.util.sidogugun.dto.SidoCodeDto">
+		select sido_code, sido_name from sido
+	</select>
+	<select id="gugunCodeList" resultType="com.ssafy.enjoyTrip.util.sidogugun.dto.GugunCodeDto" 
+	parameterType="string">
+		select gugun_code, gugun_name, sido_code from gugun where sido_code = #{gugunCode}
+	</select>
+</mapper>

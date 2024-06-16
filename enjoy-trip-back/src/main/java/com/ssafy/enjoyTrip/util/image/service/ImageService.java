@@ -1,4 +1,4 @@
-package com.ssafy.enjoyTrip.util.image;
+package com.ssafy.enjoyTrip.util.image.service;
 
 import org.springframework.web.multipart.MultipartFile;
 

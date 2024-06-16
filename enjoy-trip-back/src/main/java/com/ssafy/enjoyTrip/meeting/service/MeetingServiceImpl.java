@@ -10,7 +10,7 @@ import java.util.List;
 
 import com.ssafy.enjoyTrip.meeting.dto.ParticipantDto;
 import com.ssafy.enjoyTrip.user.dto.UserDto;
-import com.ssafy.enjoyTrip.util.image.ImageService;
+import com.ssafy.enjoyTrip.util.image.service.ImageService;
 
 import lombok.RequiredArgsConstructor;
 

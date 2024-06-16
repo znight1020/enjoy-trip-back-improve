@@ -6,7 +6,7 @@ import java.util.stream.Collectors;
 
 import com.ssafy.enjoyTrip.community.dao.CommunityDao;
 import com.ssafy.enjoyTrip.community.dto.CommunityDto;
-import com.ssafy.enjoyTrip.util.image.ImageService;
+import com.ssafy.enjoyTrip.util.image.service.ImageService;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 

@@ -5,13 +5,14 @@ import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import com.ssafy.enjoyTrip.util.image.ImageService;
+import com.ssafy.enjoyTrip.util.image.service.ImageService;
 import com.ssafy.enjoyTrip.user.dao.UserDao;
 import com.ssafy.enjoyTrip.user.dto.UserDto;
 
 import lombok.extern.slf4j.Slf4j;
 import lombok.RequiredArgsConstructor;
 
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.stereotype.Service;
 
@@ -60,6 +61,7 @@ public class UserServiceImpl implements UserService{
 	}
 
 	@Override
+	@Transactional
 	public String updateUserProfileImage(int userId, String preProfileImageUrl, MultipartFile multipartFile) throws IOException {
 		String userProfileImageUrl = imageService.imageUpload("user", multipartFile);
 		imageService.preUserProfileDelete(preProfileImageUrl);

@@ -31,6 +31,8 @@ public class ImageRepositoryImpl implements ImageRepository {
             throw new ImageUploadException("요청 실패, Message: " + e.getMessage(), e);
         } catch (IOException e) {
             throw new ImageUploadException("파일 입출력 오류 발생, Message: " + e.getMessage(), e);
+        } catch (IllegalArgumentException e) {
+            throw new ImageUploadException("존재하지 않는 버킷, Message: " + e.getMessage(), e);
         }
 
         return amazonS3Client.getUrl(bucketName, fileName).toString();
